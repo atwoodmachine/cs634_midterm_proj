@@ -4,13 +4,13 @@ from itertools import combinations
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, fpgrowth, association_rules
 
-# Represents a k-itemset
+#Represents a k-itemset
 class ItemSet:
     def __init__(self, items):
-        self.items = items #a set
+        self.items = items #a set of strings (item names)
         self.support = 0
         self.supportPercent = 0
-        self.allAntecedents = [] #a list of sets of item names
+        self.allAntecedents = [] #a list of sets of item names for association rules
     def __str__(self):
         return f"{self.items} Support: {self.support}, {self.supportPercent}%"
 
@@ -46,7 +46,6 @@ def frequent_itemset(itemSet):
 
 #Helper function to generate all antecedents possible for an item set
 def antecedents(itemSet):
-    #i need to pre-process to get the names out
     temp = []
     ret = []
     for string in itemSet.items:
@@ -57,7 +56,7 @@ def antecedents(itemSet):
     itemSet.allAntecedents = ret
 
 #Returns frequent k-itemset by making every combination from the 1 itemset.
-#The data type returned is a list of ItemSet objects 
+#Returns a list of ItemSet objects 
 def k_itemset(k, singleItems):
     temp = []
     for thing in singleItems:
@@ -72,15 +71,15 @@ def k_itemset(k, singleItems):
     frret = frequent_itemset(ret)
     return frret
 
-#helper function, takes a set of strings
+#Helper function, takes a set of strings (item names)
 def findSupport(find):
     for item in allGeneratedItemsets:
         if(item.items == find):
             return item.support
     return 0 
 
-#Confidence and association rules
-#Takes an Itemset object
+#Generates association rules and calculates confidence
+#Takes an ItemSet object
 def association_Rules(generateFrom):
     ret = [] #list of association rule objects
     numerator = generateFrom.support
@@ -98,7 +97,7 @@ def association_Rules(generateFrom):
     
 #Intro
 print("Available stores are listed below.\n")
-print("1. Barnes and Noble\n2. Citadel Paints\n3. GameStop\n4. Staples\n5. Warhammer")
+print("1. Barnes and Noble\n2. Citadel Paints\n3. GameStop\n4. Staples\n5. Warhammer\n")
 
 itemsAvailable = ''
 transactions = ''
@@ -150,7 +149,7 @@ while(True):
     break
 
 #User defined input files
-read_items = pd.read_csv(itemsAvailable, usecols=[1]) #Only item names are relevant, expect item names to be unique for our purposes
+read_items = pd.read_csv(itemsAvailable, usecols=[1]) #Only item names are relevant, expect item names to be unique 
 read_transactions = pd.read_csv(transactions)
 
 total_transactions = len(read_transactions)
@@ -176,22 +175,23 @@ frequent_itemset(oneItemsets)
 
 allGeneratedItemsets = []
 tempSets = []
-#get frequent items
 
+#Generate frequent k-itemsets
 for i in range(1, len(read_items)):
     tempSets = k_itemset(i, oneItemsets)
     if(len(tempSets) == 0):
-        break
+        break 
     else:
         allGeneratedItemsets += tempSets
 
+#Generate association rules
 assocRules = []
 for item in allGeneratedItemsets:
     assocRules += association_Rules(item)
 
 bruteEndTime = time.time()
 
-print('Results returned in ', (bruteEndTime - bruteStartTime),'seconds from brute force algorithm')
+print('\nResults returned in ', (bruteEndTime - bruteStartTime),'seconds from brute force algorithm')
 
 if(len(assocRules) == 0):
     print("No rules found. Try a lower minimum support value (25 or less is realistic for these data sets) or a lower minimum confidence level (60 or less is realistic for these data sets)")
@@ -203,8 +203,8 @@ for rule in assocRules:
         print(rule)
 print("")
 
-#apriori from mlxtend for performance comparison
-#data preprocessing
+#apriori from mlxtend for comparison
+#data preprocessing for mlxtend
 aprioriStart = time.time()
 dataset = []
 for x in range(total_transactions):
@@ -217,13 +217,15 @@ te_ary = te.fit(dataset).transform(dataset)
 df = pd.DataFrame(te_ary, columns=te.columns_)
 
 apriori_generated = apriori(df, min_support=(minSupport/100), use_colnames=True)
+
 rules = association_rules(apriori_generated, metric="confidence", min_threshold=(minConfidence/100))
 rules = rules[['antecedents', 'consequents', 'support', 'confidence']]
 aprioriEnd = time.time()
+
 print('Results returned in ', (aprioriEnd - aprioriStart),'seconds from mlxtend apriori implementation')
 print("Association rules: ", rules, "\n")
 
-#fpgrowth from mlxtend for performance comparison
+#fpgrowth from mlxtend for comparison
 
 fpStart = time.time()
 fpgrowth_generated = fpgrowth(df, min_support=(minSupport/100), use_colnames=True)

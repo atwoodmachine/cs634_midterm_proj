@@ -135,14 +135,14 @@ while(True):
 
 #Prompt user for support and confidence
 while(True):
-    minSupport = int(input("Please enter a minimum support value from 1 to 100 (this value is interpreted as a percentage):\n"))
+    minSupport = float(input("Please enter a minimum support value from 1 to 100 (this value is interpreted as a percentage):\n"))
     if(minSupport < 1 or minSupport > 100):
         print("Please enter a valid input from 1 to 100")
         continue
     break
 
 while(True):
-    minConfidence = int(input("Please enter a minimum confidence value from 1 to 100 (this value is interpreted as a percentage):\n"))
+    minConfidence = float(input("Please enter a minimum confidence value from 1 to 100 (this value is interpreted as a percentage):\n"))
     if(minConfidence < 1 or minConfidence > 100):
         print("Please enter a valid input from 1 to 100")
         continue

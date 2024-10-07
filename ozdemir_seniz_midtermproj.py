@@ -226,7 +226,7 @@ print('Results returned in ', (aprioriEnd - aprioriStart),'seconds from mlxtend 
 
 fpStart = time.time()
 fpgrowth_generated = fpgrowth(df, min_support=(minSupport/100), use_colnames=True)
-rules = association_rules(apriori_generated, metric="confidence", min_threshold=(minConfidence/100))
+rules = association_rules(fpgrowth_generated, metric="confidence", min_threshold=(minConfidence/100))
 rules = rules[['antecedents', 'consequents', 'support', 'confidence']]
 fpEnd = time.time()
 print("Association rules: ", rules, "\n")

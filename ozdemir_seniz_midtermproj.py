@@ -223,7 +223,6 @@ aprioriEnd = time.time()
 print("Association rules: ", rules, "\n")
 print('Results returned in ', (aprioriEnd - aprioriStart),'seconds from mlxtend apriori implementation\n')
 
-
 #fpgrowth from mlxtend for comparison
 
 fpStart = time.time()

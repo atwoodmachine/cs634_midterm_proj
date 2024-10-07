@@ -189,10 +189,6 @@ assocRules = []
 for item in allGeneratedItemsets:
     assocRules += association_Rules(item)
 
-bruteEndTime = time.time()
-
-print('\nResults returned in ', (bruteEndTime - bruteStartTime),'seconds from brute force algorithm')
-
 if(len(assocRules) == 0):
     print("No rules found. Try a lower minimum support value (25 or less is realistic for these data sets) or a lower minimum confidence level (60 or less is realistic for these data sets)")
 else:
@@ -201,10 +197,13 @@ else:
 for rule in assocRules:
     if(rule.confidence >= minConfidence):
         print(rule)
-print("")
+bruteEndTime = time.time()
+
+print('\nResults returned in ', (bruteEndTime - bruteStartTime),'seconds from brute force algorithm\n')
 
 #apriori from mlxtend for comparison
 #data preprocessing for mlxtend
+print('mlxtend Implementations for comparison purposes:\n')
 aprioriStart = time.time()
 dataset = []
 for x in range(total_transactions):
@@ -221,9 +220,9 @@ apriori_generated = apriori(df, min_support=(minSupport/100), use_colnames=True)
 rules = association_rules(apriori_generated, metric="confidence", min_threshold=(minConfidence/100))
 rules = rules[['antecedents', 'consequents', 'support', 'confidence']]
 aprioriEnd = time.time()
-
-print('Results returned in ', (aprioriEnd - aprioriStart),'seconds from mlxtend apriori implementation')
 print("Association rules: ", rules, "\n")
+print('Results returned in ', (aprioriEnd - aprioriStart),'seconds from mlxtend apriori implementation\n')
+
 
 #fpgrowth from mlxtend for comparison
 
@@ -232,5 +231,5 @@ fpgrowth_generated = fpgrowth(df, min_support=(minSupport/100), use_colnames=Tru
 rules = association_rules(apriori_generated, metric="confidence", min_threshold=(minConfidence/100))
 rules = rules[['antecedents', 'consequents', 'support', 'confidence']]
 fpEnd = time.time()
+print("Association rules: ", rules, "\n")
 print('Results returned in ', (fpEnd - fpStart),'seconds from mlxtend fpgrowth implementation')
-print("Association rules: ", rules)

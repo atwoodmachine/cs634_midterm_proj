@@ -148,13 +148,12 @@ while(True):
         continue
     break
 
+bruteStartTime = time.time()
 #User defined input files
 read_items = pd.read_csv(itemsAvailable, usecols=[1]) #Only item names are relevant, expect item names to be unique 
 read_transactions = pd.read_csv(transactions)
 
 total_transactions = len(read_transactions)
-
-bruteStartTime = time.time()
 
 #preprocess transactions into a list of sets (for usage of subset methods)
 transactionsList = []

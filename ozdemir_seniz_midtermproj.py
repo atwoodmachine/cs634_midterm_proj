@@ -170,7 +170,6 @@ for i in range(len(read_items)):
     oneItemsets.append(tempSet)
 
 itemset_support(oneItemsets)
-frequent_itemset(oneItemsets)
 
 allGeneratedItemsets = []
 tempSets = []
